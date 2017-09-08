@@ -5,6 +5,51 @@ public class Variant20 {
     public static String [] zodiacSigns = { "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer",
             "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn" };
 
+    public static class TwoDoubles {
+        @Override
+        public String toString() {
+            return "TwoDoubles{" +
+                    "a=" + a +
+                    ", b=" + b +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            TwoDoubles that = (TwoDoubles) o;
+
+            if (Double.compare(that.a, a) != 0) return false;
+            return Double.compare(that.b, b) == 0;
+        }
+
+        private double a;
+        private double b;
+
+        public TwoDoubles(double a, double b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public double getB() {
+            return b;
+        }
+
+        public void setB(double b) {
+            this.b = b;
+        }
+
+        public double getA() {
+            return a;
+        }
+
+        public void setA(double a) {
+            this.a = a;
+        }
+    }
+
     /**
      *
      * @param x1 is coordinate of first point
@@ -47,11 +92,11 @@ public class Variant20 {
      * @param C
      * print the closest point to A and distance
      */
-    public String whichPointIsClosest(double A, double B, double C) {
+    public TwoDoubles whichPointIsClosest(double A, double B, double C) {
         double AB = Math.abs(A- B);
         double AC = Math.abs(A -C);
-        if (AB < AC) return  "" + B + " " + AB;
-        else return "" + C + " " + AC;
+        if (AB < AC) return  new TwoDoubles(B, AB);
+        else return new TwoDoubles(C, AC);
     }
 
     /**

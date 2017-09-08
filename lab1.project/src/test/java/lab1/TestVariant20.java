@@ -6,6 +6,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static lab1.Variant20.zodiacSigns;
+import lab1.Variant20.TwoDoubles;
 
 public class TestVariant20 {
 
@@ -45,13 +46,15 @@ public class TestVariant20 {
     }
 
     @Test(dataProvider = "closestPointProvider")
-    public void closestPointTest(double A, double B, double C, String expected) {
+    public void closestPointTest(double A, double B, double C, TwoDoubles expected) {
         assertEquals(new Variant20().whichPointIsClosest(A, B, C), expected);
     }
 
     @DataProvider
     public Object[][] closestPointProvider() {
-        return new Object[][] {{0, 2, 3, "2.0 2.0"}, {5, -2, 20, "-2.0 7.0"}, {1.5, 0, 10, "0.0 1.5"}};
+        return new Object[][] {{0, 2, 3, new TwoDoubles(2.0, 2.0)},
+                {5, -2, 20, new TwoDoubles(-2.0, 7.0)},
+                {1.5, 0, 10, new TwoDoubles(0.0, 1.5)}};
     }
 
     @Test(dataProvider = "zodiacSignProvider")
