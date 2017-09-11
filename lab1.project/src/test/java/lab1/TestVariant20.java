@@ -97,4 +97,15 @@ public class TestVariant20 {
         return new Object[][] { {2, true}, {-2, true}, {0, false}, {10, false}, {2555, true} };
     }
 
+    @Test(dataProvider = "array20Provider")
+    public void array20Test(int N, double [] arr, int exp) {
+        assertEquals(new Variant20().array20(arr, N), exp);
+    }
+
+    @DataProvider
+    public Object[][] array20Provider() {
+        return new Object[][] {{3, new double[]{1,2,3}, 1},
+                {3, new double[]{1,2,-1}, 1},
+                {4, new double[]{1,2,-1,0}, 2}};
+    }
 }

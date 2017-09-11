@@ -6,6 +6,9 @@ public class Variant20 {
             "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn" };
 
     public static class TwoDoubles {
+        private double a;
+        private double b;
+
         @Override
         public String toString() {
             return "TwoDoubles{" +
@@ -24,9 +27,6 @@ public class Variant20 {
             if (Double.compare(that.a, a) != 0) return false;
             return Double.compare(that.b, b) == 0;
         }
-
-        private double a;
-        private double b;
 
         public TwoDoubles(double a, double b) {
             this.a = a;
@@ -174,6 +174,26 @@ public class Variant20 {
             n /= 10;
         }
         return false;
+    }
+
+    /**
+     *
+     * @param arr
+     * @param N
+     * @return
+     */
+    public int array20(double [] arr, int N) {
+        int count = 0, i = 0;
+        while (i < N-1) {
+            if(arr[i] <= arr[i+1]) {
+                count++;
+                while(i < N-1 && arr[i] <= arr[i+1]) {
+                    i++;
+                }
+            }
+            i++;
+        }
+        return count;
     }
 
     public static void main(String... strings) {
