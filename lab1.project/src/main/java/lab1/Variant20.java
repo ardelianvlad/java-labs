@@ -196,6 +196,39 @@ public class Variant20 {
         return count;
     }
 
+    public double[][] matrix20(double [][] matr, int n, int m) {
+        int index = -1;
+        for (int j = 0; j < m; j++) {
+            boolean flag = true;
+            for (int i = 0; i < n; i++) {
+                if (matr[i][j] >= 0) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                index = j;
+            }
+        }
+        double [][] matr2;
+        if(index == -1) {
+            matr2 = new double[n][m];
+        }
+        else {
+            matr2 = new double[n][m-1];
+        }
+        for (int i = 0; i < n; i++) {
+            int k = 0;
+            for (int j = 0; j < m; j++) {
+                if (j != index) {
+                    matr2[i][k] = matr[i][j];
+                    k++;
+                }
+            }
+        }
+        return matr2;
+    }
+
     public static void main(String... strings) {
         System.out.println("Start of first lab");
         System.out.println("Done!!!");

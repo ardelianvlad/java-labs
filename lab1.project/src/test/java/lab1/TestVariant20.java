@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 import static lab1.Variant20.zodiacSigns;
 import lab1.Variant20.TwoDoubles;
 
+import java.util.Arrays;
+
 public class TestVariant20 {
 
     @Test(dataProvider = "distanceProvider")
@@ -108,4 +110,22 @@ public class TestVariant20 {
                 {3, new double[]{1,2,-1}, 1},
                 {4, new double[]{1,2,-1,0}, 2}};
     }
+
+    @Test(dataProvider = "matrix20Provider")
+    public void matrix20Test(double [][] matr, int n, int m, double [][] exp) {
+        assertEquals(Arrays.deepEquals(new Variant20().matrix20(matr, n, m), exp), true);
+    }
+
+    @DataProvider
+    public Object[][] matrix20Provider() {
+        return new Object[][] {
+                {new double[][] {{1,2,3},{4,5,6},{7,8,9}}, 3, 3,
+                        new double[][] {{1,2,3},{4,5,6},{7,8,9}}},
+                {new double[][] {{1,-1,3},{-5,-1,-6},{1,-2,3}}, 3, 3,
+                        new double[][] {{1,3},{-5,-6},{1,3}}},
+                {new double[][] {{-1,-5,3},{-6,-8,9},{-9,-8,-3}}, 3, 3,
+                        new double[][] {{-1,3},{-6,9},{-9,-3}}}
+        };
+    }
+
 }
