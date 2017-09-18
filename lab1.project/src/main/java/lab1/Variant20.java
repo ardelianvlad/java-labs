@@ -179,15 +179,14 @@ public class Variant20 {
     /**
      *
      * @param arr
-     * @param N
      * @return
      */
-    public int array20(double [] arr, int N) {
+    public int array20(double [] arr) {
         int count = 0, i = 0;
-        while (i < N-1) {
+        while (i < arr.length-1) {
             if(arr[i] <= arr[i+1]) {
                 count++;
-                while(i < N-1 && arr[i] <= arr[i+1]) {
+                while(i < arr.length-1 && arr[i] <= arr[i+1]) {
                     i++;
                 }
             }
@@ -196,7 +195,17 @@ public class Variant20 {
         return count;
     }
 
-    public double[][] matrix20(double [][] matr, int n, int m) {
+    /**
+     *
+     * @param matr
+     * @return
+     */
+    public double[][] matrix20(double [][] matr) {
+        if(matr.length == 0){
+            return new double[][]{};
+        }
+        int n = matr.length;
+        int m = matr[0].length;
         int index = -1;
         for (int j = 0; j < m; j++) {
             boolean flag = true;

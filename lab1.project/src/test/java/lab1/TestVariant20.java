@@ -100,30 +100,31 @@ public class TestVariant20 {
     }
 
     @Test(dataProvider = "array20Provider")
-    public void array20Test(int N, double [] arr, int exp) {
-        assertEquals(new Variant20().array20(arr, N), exp);
+    public void array20Test(double [] arr, int exp) {
+        assertEquals(new Variant20().array20(arr), exp);
     }
 
     @DataProvider
     public Object[][] array20Provider() {
-        return new Object[][] {{3, new double[]{1,2,3}, 1},
-                {3, new double[]{1,2,-1}, 1},
-                {4, new double[]{1,2,-1,0}, 2}};
+        return new Object[][] {{new double[]{1,2,3}, 1},
+                {new double[]{1,2,-1}, 1},
+                {new double[]{1,2,-1,0}, 2},
+                {new double[]{1,2,3,-3, -10, 0, 2, 4, 5, 4},2}};
     }
 
     @Test(dataProvider = "matrix20Provider")
-    public void matrix20Test(double [][] matr, int n, int m, double [][] exp) {
-        assertEquals(Arrays.deepEquals(new Variant20().matrix20(matr, n, m), exp), true);
+    public void matrix20Test(double [][] matr, double [][] exp) {
+        assertEquals(Arrays.deepEquals(new Variant20().matrix20(matr), exp), true);
     }
 
     @DataProvider
     public Object[][] matrix20Provider() {
         return new Object[][] {
-                {new double[][] {{1,2,3},{4,5,6},{7,8,9}}, 3, 3,
+                {new double[][] {{1,2,3},{4,5,6},{7,8,9}},
                         new double[][] {{1,2,3},{4,5,6},{7,8,9}}},
-                {new double[][] {{1,-1,3},{-5,-1,-6},{1,-2,3}}, 3, 3,
+                {new double[][] {{1,-1,3},{-5,-1,-6},{1,-2,3}},
                         new double[][] {{1,3},{-5,-6},{1,3}}},
-                {new double[][] {{-1,-5,3},{-6,-8,9},{-9,-8,-3}}, 3, 3,
+                {new double[][] {{-1,-5,3},{-6,-8,9},{-9,-8,-3}},
                         new double[][] {{-1,3},{-6,9},{-9,-3}}}
         };
     }
