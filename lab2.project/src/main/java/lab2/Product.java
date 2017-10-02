@@ -2,13 +2,14 @@ package lab2;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
 public class Product {
 
     public enum Category {
-        FRUIT, vegetables, dairy, meat, fish, drinks, other
+        FRUIT, VEGETABLES, DAIRY, MEAT, FISH, DRINKS, OTHER
     };
 
     private String name;
@@ -81,7 +82,10 @@ public class Product {
         if (days < 0) {
             throw new IllegalArgumentException("Wrong expiration");
         }
-        this.expiration = new Date(new Date().getTime() + days*24*3600*1000);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.productionDate);
+        calendar.add(Calendar.DATE, days);
+        this.expiration = calendar.getTime();
     }
 
     public double getPrice() {
@@ -111,7 +115,7 @@ public class Product {
      * @return expired
      */
     public boolean isExpired() {
-        return (new Date().after(this.expiration));
+        return (new Date().before(this.expiration));
     }
 
 
@@ -125,7 +129,7 @@ public class Product {
 
     public Product() {
         this.name = "";
-        this.category = Category.other;
+        this.category = Category.OTHER;
         this.productionDate = new Date();
         this.expiration = this.productionDate;
         this.price = 0;
@@ -150,16 +154,16 @@ public class Product {
     public String toString() {
 
         return "lab2.Product{" +
-                "name='" + name + '\'' +
-                ", category=" + category +
-                ", productionDate=" + productionDate +
-                ", expiration=" + expiration +
-                ", price=" + String.format("%.2f", price) +
-                '}';
+                "\nname='" + name + '\'' +
+                ", \ncategory=" + category +
+                ", \nproductionDate=" + productionDate +
+                ", \nexpiration=" + expiration +
+                ", \nprice=" + String.format("%.2f", price) +
+                "\n}";
     }
 
     public static void main(String [] args) {
-        Product product = new Product();
+        Product product = new ProductBuilder().createProduct();
         product.setExpiration(10);
         System.out.println(product.getExpiration());
     }
