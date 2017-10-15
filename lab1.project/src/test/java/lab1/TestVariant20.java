@@ -5,7 +5,7 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static lab1.Variant20.zodiacSigns;
+import static lab1.Variant20.Zodiac;
 import lab1.Variant20.TwoDoubles;
 
 import java.util.Arrays;
@@ -60,18 +60,17 @@ public class TestVariant20 {
     }
 
     @Test(dataProvider = "zodiacSignProvider")
-    public void zodiacSignTest(int d, int m, String expected) {
-        assertEquals(new Variant20().zodiacSign(d, m), expected);
+    public void zodiacSignTest(int d, int m, Zodiac expected) {
+        assertEquals(new Variant20().zodiac(d, m), expected);
     }
 
     @DataProvider
     public Object[][] zodiacSignProvider() {
-        Object [][] data = new Object[12][];
-        data[0] = new Object[] {15, 1, zodiacSigns[11]};
-        for (int i = 1; i < 12; i++){
-            data[i] = new Object[] {15, i+1, zodiacSigns[i-1]};
-        }
-        return data;
+        return new Object[][] {
+                {15, 1, Zodiac.CAPRICORN},
+                {18, 8, Zodiac.LEO},
+                {8, 9, Zodiac.VIRGO},
+        };
     }
 
     @Test(dataProvider = "factorialSumProvider")
@@ -109,7 +108,7 @@ public class TestVariant20 {
         return new Object[][] {{new double[]{1,2,3}, 1},
                 {new double[]{1,2,-1}, 1},
                 {new double[]{1,2,-1,0}, 2},
-                {new double[]{1,2,3,-3, -10, 0, 2, 4, 5, 4},2}};
+                {new double[]{1,2,3,-3, -10, 0, 2, 4, 5, 4}, 2}};
     }
 
     @Test(dataProvider = "matrix20Provider")
@@ -120,12 +119,24 @@ public class TestVariant20 {
     @DataProvider
     public Object[][] matrix20Provider() {
         return new Object[][] {
-                {new double[][] {{1,2,3},{4,5,6},{7,8,9}},
-                        new double[][] {{1,2,3},{4,5,6},{7,8,9}}},
-                {new double[][] {{1,-1,3},{-5,-1,-6},{1,-2,3}},
-                        new double[][] {{1,3},{-5,-6},{1,3}}},
-                {new double[][] {{-1,-5,3},{-6,-8,9},{-9,-8,-3}},
-                        new double[][] {{-1,3},{-6,9},{-9,-3}}}
+                {new double[][] {{1,2,3},
+                                {4,5,6},
+                                {7,8,9}},
+                        new double[][] {{1,2,3},
+                                        {4,5,6},
+                                        {7,8,9}}},
+                {new double[][] {{1,-1,3},
+                                {-5,-1,-6},
+                                {1,-2,3}},
+                        new double[][] {{1,3},
+                                        {-5,-6},
+                                        {1,3}}},
+                {new double[][] {{-1,-5,3},
+                                {-6,-8,9},
+                                {-9,-8,-3}},
+                        new double[][] {{-1,3},
+                                        {-6,9},
+                                        {-9,-3}}}
         };
     }
 

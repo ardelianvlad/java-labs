@@ -2,8 +2,10 @@ package lab1;
 
 public class Variant20 {
 
-    public static String [] zodiacSigns = { "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer",
-            "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn" };
+    public enum Zodiac {
+        AQUARIUS, PISCES, ARIES, TAURUS, GEMINI, CANCER,
+        LEO, VIRGO, LIBRA, SCORPIO, SAGITTARIUS, CAPRICORN
+    };
 
     public static class TwoDoubles {
         private double a;
@@ -105,37 +107,37 @@ public class Variant20 {
      * @param m is month
      * @return zodiac sign
      */
-    public String zodiacSign(int d, int m) {
+    public Zodiac zodiac(int d, int m) {
         if (d < 1 || d > 31 || m < 1 || m > 12) {
             throw new IllegalArgumentException("Wrong date.");
         }
         switch (m) {
-            case 1: if (d <= 19) return zodiacSigns[11];
-            else return zodiacSigns[0];
-            case 2: if (d <= 18) return zodiacSigns[0];
-            else return zodiacSigns[1];
-            case 3: if (d <= 20) return zodiacSigns[1];
-            else return zodiacSigns[2];
-            case 4: if (d <= 19) return zodiacSigns[2];
-            else return zodiacSigns[3];
-            case 5: if (d <= 20) return zodiacSigns[3];
-            else return zodiacSigns[4];
-            case 6: if (d <= 20) return zodiacSigns[4];
-            else return zodiacSigns[5];
-            case 7: if (d <= 22) return zodiacSigns[5];
-            else return zodiacSigns[6];
-            case 8: if (d <= 22) return zodiacSigns[6];
-            else return zodiacSigns[7];
-            case 9: if (d <= 22) return zodiacSigns[7];
-            else return zodiacSigns[8];
-            case 10: if (d <= 22) return zodiacSigns[8];
-            else return zodiacSigns[9];
-            case 11: if (d <= 21) return zodiacSigns[9];
-            else return zodiacSigns[10];
-            case 12: if (d <= 21) return zodiacSigns[10];
-            else return zodiacSigns[11];
+            case 1: if (d <= 19) return Zodiac.CAPRICORN;
+            else return Zodiac.AQUARIUS;
+            case 2: if (d <= 18) return Zodiac.AQUARIUS;
+            else return Zodiac.PISCES;
+            case 3: if (d <= 20) return Zodiac.PISCES;
+            else return Zodiac.ARIES;
+            case 4: if (d <= 19) return Zodiac.ARIES;
+            else return Zodiac.TAURUS;
+            case 5: if (d <= 20) return Zodiac.TAURUS;
+            else return Zodiac.GEMINI;
+            case 6: if (d <= 20) return Zodiac.GEMINI;
+            else return Zodiac.CANCER;
+            case 7: if (d <= 22) return Zodiac.CANCER;
+            else return Zodiac.LEO;
+            case 8: if (d <= 22) return Zodiac.LEO;
+            else return Zodiac.VIRGO;
+            case 9: if (d <= 22) return Zodiac.VIRGO;
+            else return Zodiac.LIBRA;
+            case 10: if (d <= 22) return Zodiac.LIBRA;
+            else return Zodiac.SCORPIO;
+            case 11: if (d <= 21) return Zodiac.SCORPIO;
+            else return Zodiac.SAGITTARIUS;
+            case 12: if (d <= 21) return Zodiac.SAGITTARIUS;
+            else return Zodiac.CAPRICORN;
         }
-        return zodiacSigns[11];
+        return Zodiac.CAPRICORN;
     }
 
     /**
@@ -203,6 +205,7 @@ public class Variant20 {
     public double[][] matrix20(double [][] matr) {
         if(matr.length == 0){
             return new double[][]{};
+
         }
         int n = matr.length;
         int m = matr[0].length;
@@ -236,11 +239,6 @@ public class Variant20 {
             }
         }
         return matr2;
-    }
-
-    public static void main(String... strings) {
-        System.out.println("Start of first lab");
-        System.out.println("Done!!!");
     }
 
 }
