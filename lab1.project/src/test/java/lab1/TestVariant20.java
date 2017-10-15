@@ -19,7 +19,9 @@ public class TestVariant20 {
 
     @DataProvider
     public Object[][] distanceProvider() {
-        return new Object[][] { {0,0,0,0,0f}, {0,0,1,0,1}, {0,0,1,1,Math.sqrt(2)} };
+        return new Object[][] { {0,0,0,0,0f},
+                                {0,0,1,0,1},
+                                {0,0,1,1,Math.sqrt(2)} };
     }
 
     @Test(dataProvider = "secondsProvider")

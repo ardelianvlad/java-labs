@@ -113,29 +113,29 @@ public class Variant20 {
         }
         switch (m) {
             case 1: if (d <= 19) return Zodiac.CAPRICORN;
-            else return Zodiac.AQUARIUS;
+                    else return Zodiac.AQUARIUS;
             case 2: if (d <= 18) return Zodiac.AQUARIUS;
-            else return Zodiac.PISCES;
+                    else return Zodiac.PISCES;
             case 3: if (d <= 20) return Zodiac.PISCES;
-            else return Zodiac.ARIES;
+                    else return Zodiac.ARIES;
             case 4: if (d <= 19) return Zodiac.ARIES;
-            else return Zodiac.TAURUS;
+                    else return Zodiac.TAURUS;
             case 5: if (d <= 20) return Zodiac.TAURUS;
-            else return Zodiac.GEMINI;
+                    else return Zodiac.GEMINI;
             case 6: if (d <= 20) return Zodiac.GEMINI;
-            else return Zodiac.CANCER;
+                    else return Zodiac.CANCER;
             case 7: if (d <= 22) return Zodiac.CANCER;
-            else return Zodiac.LEO;
+                    else return Zodiac.LEO;
             case 8: if (d <= 22) return Zodiac.LEO;
-            else return Zodiac.VIRGO;
+                    else return Zodiac.VIRGO;
             case 9: if (d <= 22) return Zodiac.VIRGO;
-            else return Zodiac.LIBRA;
+                    else return Zodiac.LIBRA;
             case 10: if (d <= 22) return Zodiac.LIBRA;
-            else return Zodiac.SCORPIO;
+                    else return Zodiac.SCORPIO;
             case 11: if (d <= 21) return Zodiac.SCORPIO;
-            else return Zodiac.SAGITTARIUS;
+                    else return Zodiac.SAGITTARIUS;
             case 12: if (d <= 21) return Zodiac.SAGITTARIUS;
-            else return Zodiac.CAPRICORN;
+                    else return Zodiac.CAPRICORN;
         }
         return Zodiac.CAPRICORN;
     }
