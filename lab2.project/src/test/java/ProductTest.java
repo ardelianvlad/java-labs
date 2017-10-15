@@ -1,12 +1,23 @@
 import lab2.Product;
 import lab2.ProductBuilder;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import lab2.Product.Category;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+
 import static org.testng.Assert.assertEquals;
 
 public class ProductTest {
+
+    private LocalDate oldDate;
+
+    @BeforeSuite
+    public void beforeDate(){
+        oldDate = LocalDate.now().minusDays(30);
+    }
 
     @Test(dataProvider = "isCategoryProvider")
     void isCategoryTest (Category category, boolean expected) {
@@ -25,16 +36,15 @@ public class ProductTest {
     }
 
     @Test(dataProvider = "isExpiredProvider")
-    void isExpiredTest (String date, int daysExpired, boolean expected) {
-        System.out.println(new ProductBuilder().setProductionDate(date).setExpirationDays(daysExpired).createProduct());
-        assertEquals(new ProductBuilder().setProductionDate(date).setExpirationDays(daysExpired).createProduct().isExpired(), expected);
+    void isExpiredTest (LocalDate date, int daysExpired, boolean expected) throws ParseException {
+        assertEquals(new ProductBuilder().setProductionDate(date).setExpiration(daysExpired).createProduct().isExpired(), expected);
     }
 
     @DataProvider
     Object[][] isExpiredProvider() {
         return new Object[][] {
-                {"01-09-2017", 40, true},
-                {"01-09-2017", 10, false},
+                {oldDate, 40, true},
+                {oldDate, 10, false},
         };
     }
 

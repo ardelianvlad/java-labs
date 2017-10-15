@@ -1,8 +1,7 @@
 package lab2;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -11,12 +10,7 @@ public class Storage {
 
     private List<Product> products;
 
-    public Storage() {
-        this.products = new ArrayList<>();
-        name = "";
-    }
-
-    private Storage(List<Product> products) {
+    Storage(List<Product> products) {
         setProducts(products);
     }
     private String name;
@@ -46,9 +40,8 @@ public class Storage {
      * @param product
      * @return
      */
-    public Storage addProduct(Product product) {
-        products.add(product);
-        return this;
+    public boolean addProduct(Product product) {
+        return products.add(product);
     }
 
     /**
@@ -108,12 +101,9 @@ public class Storage {
         if (days < 0) {
             throw new IllegalArgumentException("");
         }
-        return this.filter((Product product) -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.DATE, days);
-            return product.isExpired() && calendar.getTime().after(product.getExpiration());
-        });
+        return this.filter(product ->
+            product.isExpired() && LocalDate.now().plusDays(days).isAfter(product.getExpiration())
+        );
     }
 
 

@@ -1,10 +1,6 @@
 package lab2;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.regex.Pattern;
+import java.time.LocalDate;
 
 public class Product {
 
@@ -14,8 +10,8 @@ public class Product {
 
     private String name;
     private Category category;
-    private Date productionDate;
-    private Date expiration;
+    private LocalDate productionDate;
+    private LocalDate expiration;
     private double price;
 
     public String getName() {
@@ -23,9 +19,6 @@ public class Product {
     }
 
     public void setName(String name) throws IllegalArgumentException {
-        if (!Pattern.matches("^.{0,100}$", name)) {
-            throw new IllegalArgumentException("Too long name");
-        }
         this.name = name;
     }
 
@@ -37,55 +30,20 @@ public class Product {
         this.category = category;
     }
 
-    public Date getProductionDate() {
+    public LocalDate getProductionDate() {
         return productionDate;
     }
 
-    public void setProductionDate(String productionDate) throws IllegalArgumentException {
-        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            this.setProductionDate(ft.parse(productionDate));
-        }catch (ParseException e) {
-            throw new IllegalArgumentException("Wrong date. Pattern is 'dd-mm-yyyy'");
-        }
-
-    }
-
-    public void setProductionDate(Date productionDate) {
-        if (new Date().before(productionDate)) {
-            throw new IllegalArgumentException("Wrong date. Production must be before today");
-        }
+    public void setProductionDate(LocalDate productionDate) {
         this.productionDate = productionDate;
     }
 
-    public Date getExpiration() {
+    public LocalDate getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(String expiration) {
-        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            this.setExpiration(ft.parse(expiration));
-        }catch (ParseException e) {
-            throw new IllegalArgumentException("Wrong date. Pattern is 'dd-mm-yyyy'");
-        }
-    }
-
-    public void setExpiration(Date expiration) {
-        if (expiration.before(this.productionDate)) {
-            throw new IllegalArgumentException("Expiration must be after production");
-        }
+    public void setExpiration(LocalDate expiration) {
         this.expiration = expiration;
-    }
-
-    public void setExpiration(int days) throws IllegalArgumentException {
-        if (days < 0) {
-            throw new IllegalArgumentException("Wrong expiration");
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(this.productionDate);
-        calendar.add(Calendar.DATE, days);
-        this.expiration = calendar.getTime();
     }
 
     public double getPrice() {
@@ -115,24 +73,16 @@ public class Product {
      * @return expired
      */
     public boolean isExpired() {
-        return (new Date().before(this.expiration));
+        return (LocalDate.now().isBefore(this.expiration));
     }
 
 
-    public Product(String name, Category category, String productionDate, int expirationDays, double price) {
+    public Product(String name, Category category, LocalDate productionDate, LocalDate expiration, double price) {
         this.setName(name);
         this.category = category;
         this.setProductionDate(productionDate);
-        this.setExpiration(expirationDays);
+        this.setExpiration(expiration);
         this.setPrice(price);
-    }
-
-    public Product() {
-        this.name = "";
-        this.category = Category.OTHER;
-        this.productionDate = new Date();
-        this.expiration = this.productionDate;
-        this.price = 0;
     }
 
     @Override
@@ -160,12 +110,6 @@ public class Product {
                 ", \nexpiration=" + expiration +
                 ", \nprice=" + String.format("%.2f", price) +
                 "\n}";
-    }
-
-    public static void main(String [] args) {
-        Product product = new ProductBuilder().createProduct();
-        product.setExpiration(10);
-        System.out.println(product.getExpiration());
     }
 
 
