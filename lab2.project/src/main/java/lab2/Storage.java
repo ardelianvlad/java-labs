@@ -1,18 +1,28 @@
 package lab2;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Storage {
 
+    private String name;
     private List<Product> products;
 
-    Storage(List<Product> products) {
+    Storage(String name, List<Product> products) {
+        setName(name);
         setProducts(products);
     }
-    private String name;
+
+    Storage() {
+        products = new ArrayList<>();
+        this.name = "Storage";
+    }
 
     public String getName() {
         return name;
@@ -22,6 +32,7 @@ public class Storage {
         this.name = name;
     }
 
+    @JsonProperty("products")
     public List<Product> getProducts() {
         return products;
     }
@@ -30,6 +41,7 @@ public class Storage {
         this.products = products;
     }
 
+    @JsonIgnore
     public Product getProduct(int index) {
         return products.get(index);
     }
@@ -123,8 +135,9 @@ public class Storage {
 
     @Override
     public String toString() {
-        return "lab2.Storage{" +
-                "products=" + products +
+        return "Storage{" +
+                "name='" + name + '\'' +
+                ", products=" + products +
                 '}';
     }
 }

@@ -41,13 +41,13 @@ public class ProductTextSerializer implements Serializer<Product> {
     public Collection<Product> deserializeCollection(InputStream input) throws IOException {
         Scanner scanner = new Scanner(input, "UTF-8");
         String inputText = scanner.useDelimiter("\\A").next();
-        ArrayList<Product> faculties = new ArrayList<>();
+        ArrayList<Product> products = new ArrayList<>();
         for (String s : inputText.split("/")) {
             if (!s.isEmpty())
-                faculties.add(new ProductBuilder().fromString(s).build());
+                products.add(new ProductBuilder().fromString(s).build());
         }
         scanner.close();
-        return faculties;
+        return products;
     }
 
     static String generateString(Product product) {
@@ -63,7 +63,6 @@ public class ProductTextSerializer implements Serializer<Product> {
         sb.append(product.getExpiration().toString());
         sb.append(";price: ");
         sb.append(product.getPrice());
-        sb.append(";");
 
         return sb.toString();
     }

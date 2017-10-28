@@ -33,7 +33,18 @@ public class StorageBuilder {
         return this;
     }
 
-    public Storage createStorage() {
-        return new Storage(products);
+    public StorageBuilder fromString(String input) {
+        this.name = RegexHelper.getRegexGroup(input, RegexHelper.NAME_REGEX);
+        this.products = new ArrayList<>();
+        String[] productsArray = RegexHelper.getRegexGroup(input, RegexHelper.PRODUCTS_REGEX).split("/");
+        for (String product : productsArray) {
+            if (!product.isEmpty())
+                products.add(new ProductBuilder().fromString(product).build());
+        }
+        return this;
+    }
+
+    public Storage build() {
+        return new Storage(name, products);
     }
 }

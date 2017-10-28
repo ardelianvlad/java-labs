@@ -8,7 +8,8 @@ public class RegexHelper {
     public final static String PRODUCTION_REGEX = "production: (\\d{4}-\\d{2}-\\d{2});";
     public final static String EXPIRATION_REGEX = "production: (\\d{4}-\\d{2}-\\d{2});";
     public final static String CATEGORY_REGEX = "category: ([A-Z]+);";
-    public final static String PRICE_REGEX = "price: (\\d*.\\d*);";
+    public final static String PRICE_REGEX = "price: (\\d*.\\d*)";
+    public final static String PRODUCTS_REGEX = "products: (.+)";
 
     /**
      * @param input String to test
