@@ -1,7 +1,16 @@
 package lab2;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lab2.serializers.LocalDateSerializer;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 
+
+@JsonDeserialize(builder = ProductBuilder.class)
+@XmlRootElement
 public class Product {
 
     public enum Category {
@@ -30,6 +39,7 @@ public class Product {
         this.category = category;
     }
 
+    @JsonSerialize(using = LocalDateSerializer.class)
     public LocalDate getProductionDate() {
         return productionDate;
     }
@@ -38,6 +48,7 @@ public class Product {
         this.productionDate = productionDate;
     }
 
+    @JsonSerialize(using = LocalDateSerializer.class)
     public LocalDate getExpiration() {
         return expiration;
     }
@@ -68,14 +79,15 @@ public class Product {
     }
 
 
+
     /**
      *
-     * @return expired
+     * @return is isExpired
      */
+    @JsonIgnore
     public boolean isExpired() {
         return (LocalDate.now().isBefore(this.expiration));
     }
-
 
     public Product(String name, Category category, LocalDate productionDate, LocalDate expiration, double price) {
         this.setName(name);
@@ -83,6 +95,14 @@ public class Product {
         this.setProductionDate(productionDate);
         this.setExpiration(expiration);
         this.setPrice(price);
+    }
+
+    public Product() {
+        this.name = "";
+        this.category = Product.Category.OTHER;
+        this.productionDate = LocalDate.now();
+        this.expiration = LocalDate.now();
+        this.price = 0;
     }
 
     @Override

@@ -1,5 +1,5 @@
-import lab2.Product;
-import lab2.ProductBuilder;
+package lab2;
+
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -21,7 +21,7 @@ public class ProductTest {
 
     @Test(dataProvider = "isCategoryProvider")
     void isCategoryTest (Category category, boolean expected) {
-        Product product = new ProductBuilder().createProduct();
+        Product product = new ProductBuilder().build();
         product.setCategory(category);
         assertEquals(product.isCategory(category), expected);
     }
@@ -37,7 +37,7 @@ public class ProductTest {
 
     @Test(dataProvider = "isExpiredProvider")
     void isExpiredTest (LocalDate date, int daysExpired, boolean expected) throws ParseException {
-        assertEquals(new ProductBuilder().setProductionDate(date).setExpiration(daysExpired).createProduct().isExpired(), expected);
+        assertEquals(new ProductBuilder().setProductionDate(date).setExpirationDays(daysExpired).build().isExpired(), expected);
     }
 
     @DataProvider

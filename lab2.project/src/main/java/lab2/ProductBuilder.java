@@ -1,8 +1,14 @@
 package lab2;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lab2.serializers.LocalDateDeserializer;
+
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
+
+@JsonPOJOBuilder(buildMethodName = "build", withPrefix = "set")
 public class ProductBuilder {
     private String name;
     private Product.Category category;
@@ -40,13 +46,14 @@ public class ProductBuilder {
         return this;
     }
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     public ProductBuilder setProductionDate(LocalDate date) throws IllegalArgumentException {
         if(date.isAfter(LocalDate.now())) throw new IllegalArgumentException("Wrong date. Production must be before today");
         this.productionDate = date;
         return this;
     }
 
-    public ProductBuilder setExpiration(int expirationDays) throws IllegalArgumentException {
+    public ProductBuilder setExpirationDays(int expirationDays) throws IllegalArgumentException {
         if (expirationDays < 0) {
             throw new IllegalArgumentException("Wrong expiration");
         }
@@ -54,7 +61,8 @@ public class ProductBuilder {
         return this;
     }
 
-    public ProductBuilder setExpirationDate(LocalDate expiration) throws IllegalArgumentException {
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    public ProductBuilder setExpiration(LocalDate expiration) throws IllegalArgumentException {
         if (expiration.isBefore(productionDate)) {
             throw new IllegalArgumentException("Wrong expiration");
         }
@@ -71,10 +79,12 @@ public class ProductBuilder {
         this.setName(RegexHelper.getRegexGroup(input, RegexHelper.NAME_REGEX));
         this.setPrice(Double.parseDouble(RegexHelper.getRegexGroup(input, RegexHelper.PRICE_REGEX)));
         this.setCategory(Product.Category.valueOf(RegexHelper.getRegexGroup(input, RegexHelper.CATEGORY_REGEX)));
+        this.setProductionDate(LocalDate.parse(RegexHelper.getRegexGroup(input, RegexHelper.PRODUCTION_REGEX)));
+        this.setExpiration(LocalDate.parse(RegexHelper.getRegexGroup(input, RegexHelper.EXPIRATION_REGEX)));
         return this;
     }
 
-    public Product createProduct() {
+    public Product build() {
         return new Product(name, category, productionDate, expiration, price);
     }
 }

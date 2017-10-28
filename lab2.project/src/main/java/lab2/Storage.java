@@ -1,7 +1,6 @@
 package lab2;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -64,7 +63,7 @@ public class Storage {
 
     /**
      *
-     * @return expired products
+     * @return isExpired products
      */
     public List<Product> expiredProducts() {
         return this.filter(x -> x.isExpired());
