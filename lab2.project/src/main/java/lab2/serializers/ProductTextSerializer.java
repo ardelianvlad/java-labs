@@ -20,7 +20,6 @@ public class ProductTextSerializer implements Serializer<Product> {
 
     @Override
     public void serializeCollection(Collection<Product> objects, Writer output) throws IOException {
-        //PrintWriter writer = new PrintWriter(output, "UTF-8");
         for (Product product : objects) {
             output.write(generateString(product));
             output.write("/");
@@ -50,12 +49,12 @@ public class ProductTextSerializer implements Serializer<Product> {
         return products;
     }
 
-    static String generateString(Product product) {
+    public static String generateString(Product product) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("name: ");
         sb.append(product.getName());
-        sb.append(";category: ");
+        sb.append("; category: ");
         sb.append(product.getCategory().toString());
         sb.append(";production: ");
         sb.append(product.getProductionDate().toString());

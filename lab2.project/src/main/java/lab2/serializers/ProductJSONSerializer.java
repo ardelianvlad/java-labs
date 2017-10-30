@@ -14,8 +14,8 @@ import java.util.List;
 public class ProductJSONSerializer implements Serializer<Product> {
     @Override
     public void serialize(Product object, Writer output) throws IOException {
-        ObjectMapper mapper = new ObjectMapper()
-                .registerModule(new JavaTimeModule());
+        ObjectMapper mapper = new ObjectMapper();
+               // .registerModule(new JavaTimeModule());
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writeValue(output, object);
     }

@@ -16,7 +16,7 @@ public class ProductBuilder {
     private LocalDate expiration;
     private double price;
 
-    private final String NAME_PATTERN = "^[A-Z].{0,100}$";
+    public final static String NAME_PATTERN = "([A-Z][A-Za-z1-9 ]{0,100}?)";
 
     public ProductBuilder() {
         this.name = "";
@@ -28,7 +28,7 @@ public class ProductBuilder {
 
     public ProductBuilder setName(String name) {
         if (!Pattern.matches(NAME_PATTERN, name)) {
-            throw new IllegalArgumentException("Too long name");
+            throw new IllegalArgumentException("Wrong name");
         }
         this.name = name;
         return this;

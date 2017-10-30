@@ -1,5 +1,6 @@
 package lab2.serializers;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import lab2.Product;
 import lab2.ProductBuilder;
 import org.testng.annotations.BeforeTest;
@@ -34,6 +35,24 @@ public class ProductSerializerTest {
                 {new ProductTextSerializer(), "test.txt"}};
     }
 
+    @DataProvider
+    public Object[][] negativeDataProvider() {
+        String[] files = {"test1.json", "test2.json","test3.json", "test4.json",
+                        "test1.xml", "test2.xml", "test3.xml", "test4.xml",
+                        "test1.txt", "test2.txt", "test3.txt", "test4.txt"};
+        Object [][] objects = new Object[12][];
+        for (int i=0; i<4; i++) {
+            objects[i] = new Object[]{new ProductJSONSerializer(), files[i]};
+        }
+        for (int i=4; i<8; i++) {
+            objects[i] = new Object[]{new ProductXMLSerializer(), files[i]};
+        }
+        for (int i=8; i<12; i++) {
+            objects[i] = new Object[]{new ProductXMLSerializer(), files[i]};
+        }
+        return objects;
+    }
+
     @Test(priority = 1, dataProvider = "serializationProvider")
     public void testSerialize(Serializer<Product> s, String fileName) throws Exception {
         s.serialize(p1, new PrintWriter(new File(fileName)));
@@ -52,6 +71,11 @@ public class ProductSerializerTest {
     @Test(priority = 4, dataProvider = "serializationProvider")
     public void testDeserializeCollection(Serializer<Product> s, String fileName) throws Exception {
         assertEquals(s.deserializeCollection(new FileInputStream(new File(fileName))), products);
+    }
+
+    @Test(dataProvider = "negativeDataProvider", expectedExceptions = Exception.class)
+    public void testDeserializeCollectionFail2(Serializer<Product> s, String fileName) throws Exception {
+        s.deserializeCollection(new FileInputStream(new File(fileName)));
     }
 
 }
