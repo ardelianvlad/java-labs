@@ -325,18 +325,4 @@ public class DBService {
         conn.close();
     }
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        drop();
-//        setDatabase();
-//        Product p1 = new ProductBuilder().setName("Product5").build();
-//        Product p2 = new ProductBuilder().setName("Product6").build();
-//        Product p3 = new ProductBuilder().setName("Product7").build();
-//        Storage s1 = new StorageBuilder().setName("Storage3").addProduct(p1).addProduct(p2).addProduct(p3).build();
-//
-//        addStorage(s1);
-
-        System.out.println(getStorages());
-
-    }
-
 }
