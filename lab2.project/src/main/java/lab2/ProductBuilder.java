@@ -15,6 +15,7 @@ public class ProductBuilder {
     private LocalDate productionDate;
     private LocalDate expiration;
     private double price;
+    private int id;
 
     public final static String NAME_PATTERN = "([A-Z][A-Za-z1-9 ]{0,100}?)";
 
@@ -24,6 +25,12 @@ public class ProductBuilder {
         this.productionDate = LocalDate.now();
         this.expiration = LocalDate.now();
         this.price = 0;
+        this.id = 0;
+    }
+
+    public ProductBuilder setId(int id) {
+        this.id = id;
+        return this;
     }
 
     public ProductBuilder setName(String name) {
@@ -85,6 +92,6 @@ public class ProductBuilder {
     }
 
     public Product build() {
-        return new Product(name, category, productionDate, expiration, price);
+        return new Product(name, category, productionDate, expiration, price, id);
     }
 }

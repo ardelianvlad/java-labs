@@ -22,6 +22,15 @@ public class Product {
     private LocalDate productionDate;
     private LocalDate expiration;
     private double price;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -89,12 +98,13 @@ public class Product {
         return (LocalDate.now().isBefore(this.expiration));
     }
 
-    public Product(String name, Category category, LocalDate productionDate, LocalDate expiration, double price) {
+    public Product(String name, Category category, LocalDate productionDate, LocalDate expiration, double price, int id) {
         this.setName(name);
         this.category = category;
         this.setProductionDate(productionDate);
         this.setExpiration(expiration);
         this.setPrice(price);
+        this.setId(id);
     }
 
     public Product() {
@@ -103,6 +113,7 @@ public class Product {
         this.productionDate = LocalDate.now();
         this.expiration = LocalDate.now();
         this.price = 0;
+        this.id = 0;
     }
 
     @Override

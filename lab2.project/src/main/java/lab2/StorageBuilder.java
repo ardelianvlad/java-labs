@@ -7,12 +7,19 @@ import java.util.regex.Pattern;
 public class StorageBuilder {
     private List<Product> products;
     private String name;
+    private int id;
 
     private final String NAME_PATTERN = "^[A-Z].{0,100}$";
 
     public StorageBuilder() {
         this.products = new ArrayList<Product>();
         this.name = "Storage";
+        this.id = 0;
+    }
+
+    public StorageBuilder setId(int id) {
+        this.id = id;
+        return this;
     }
 
     public StorageBuilder setProducts(List<Product> products) {
@@ -45,6 +52,6 @@ public class StorageBuilder {
     }
 
     public Storage build() {
-        return new Storage(name, products);
+        return new Storage(name, products, id);
     }
 }

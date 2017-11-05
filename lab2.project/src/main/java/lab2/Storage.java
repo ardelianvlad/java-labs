@@ -13,15 +13,26 @@ public class Storage {
 
     private String name;
     private List<Product> products;
+    private int id;
 
-    Storage(String name, List<Product> products) {
+    Storage(String name, List<Product> products, int id) {
         setName(name);
         setProducts(products);
+        setId(id);
     }
 
     Storage() {
         products = new ArrayList<>();
-        this.name = "Storage";
+        name = "Storage";
+        id = 0;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
