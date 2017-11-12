@@ -7,6 +7,9 @@ import lab2.StorageBuilder;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.sql.SQLException;
+
+import static lab2.Product.Category.DAIRY;
 import static org.testng.Assert.assertEquals;
 
 public class DBServiceTest {
@@ -14,8 +17,8 @@ public class DBServiceTest {
     Product p1;
 
     @BeforeClass
-    void setup() {
-        p1 = new ProductBuilder().setName("Product11").setProductionDate(2017, 11, 1).setExpirationDays(30).build();
+    void setup() throws SQLException, ClassNotFoundException {
+        p1 = new ProductBuilder().setName("Product11").setProductionDate(2017, 11, 11).setExpirationDays(30).build();
         Product p2 = new ProductBuilder().setName("Product12").setProductionDate(2017, 10, 1).setExpirationDays(30).build();
         Product p3 = new ProductBuilder().setName("Product13").setProductionDate(2017, 10, 15).setExpirationDays(100).build();
         storage = new StorageBuilder().setName("Storage11").addProduct(p2).addProduct(p3).build();
@@ -23,7 +26,7 @@ public class DBServiceTest {
 
     @Test
     public void testGetNewConnection() throws Exception {
-        DBService.getNewConnection();
+        DBService.getConnection();
     }
 
     @Test(priority = 1)
@@ -38,12 +41,12 @@ public class DBServiceTest {
 
     @Test(priority = 2)
     public void testGetProduct() throws Exception {
-        assertEquals(DBService.getProduct(p1.getId()), p1);
+        p1 = DBService.getProduct("Product11");
     }
 
     @Test(priority = 2)
     public void testGetStorage() throws Exception {
-        assertEquals(DBService.getStorage(storage.getId()), storage);
+        storage = DBService.getStorage("Storage11");
     }
 
     @Test(priority = 2)
@@ -58,9 +61,9 @@ public class DBServiceTest {
 
     @Test(priority = 3)
     public void testUpdateProduct() throws Exception {
-        p1.setName("Name");
+        p1.setCategory(DAIRY);
         DBService.updateProduct(p1);
-        assertEquals(DBService.getProduct(p1.getId()).getName(), "Name");
+        assertEquals(DBService.getProduct("Product11").getCategory(), DAIRY);
     }
 
     @Test(priority = 3)
@@ -83,12 +86,12 @@ public class DBServiceTest {
     }
 
     @Test(priority = 6)
-    public void NegativeTestGetProduct() throws Exception {
+    public void negativeTestGetProduct() throws Exception {
         assertEquals(DBService.getProduct(222), null);
     }
 
     @Test(priority = 6)
-    public void NegativeTestGetStorage() throws Exception {
+    public void negativeTestGetStorage() throws Exception {
         assertEquals(DBService.getStorage(111), null);
     }
 
@@ -112,6 +115,11 @@ public class DBServiceTest {
     @Test(priority = 6, expectedExceptions = Exception.class)
     public void negativeTestDeleteProduct() throws Exception {
         DBService.deleteProduct(555);
+    }
+
+    @Test(priority = 7)
+    public void expiredProductsTest() throws SQLException, ClassNotFoundException {
+        DBService.expiredProducts();
     }
 
 }

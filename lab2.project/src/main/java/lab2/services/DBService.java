@@ -6,7 +6,10 @@ import lab2.Storage;
 import lab2.StorageBuilder;
 
 import java.sql.*;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class DBService {
@@ -18,7 +21,7 @@ public class DBService {
     /**
      * @return new connection to DB
      */
-    public static Connection getNewConnection() throws ClassNotFoundException, SQLException {
+    public static Connection getConnection() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         Properties properties = new Properties();
         properties.setProperty("user", USERNAME);
@@ -31,7 +34,7 @@ public class DBService {
         st.executeUpdate("CREATE TABLE products\n" +
                 "(\n" +
                 "    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,\n" +
-                "    name CHAR(100) NOT NULL,\n" +
+                "    name CHAR(100) NOT NULL UNIQUE,\n" +
                 "    category CHAR(10), \n" +
                 "    production_date DATE,\n" +
                 "    expiration_date DATE,\n" +
@@ -46,7 +49,7 @@ public class DBService {
         st.executeUpdate("CREATE TABLE storage\n" +
                 "(\n" +
                 "    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,\n" +
-                "    name CHAR(100) NOT NULL\n" +
+                "    name CHAR(100) NOT NULL UNIQUE\n" +
                 ");");
     }
 
@@ -54,41 +57,42 @@ public class DBService {
      * creates new database
      */
     public static void setDatabase() throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         createProductsTable(conn);
         createStorageTable(conn);
         conn.close();
     }
 
+    private static void addProductBatch(Product product, int storageId, Statement st) throws SQLException, ClassNotFoundException {
+        String sql =
+                "INSERT INTO products (name, category, production_date, expiration_date, price, storage) "+
+                        "VALUES ("+
+                        "'" + product.getName() + "', " +
+                        "'" + product.getCategory().toString() + "', " +
+                        "'" + Date.valueOf(product.getProductionDate()) + "', " +
+                        "'" + Date.valueOf(product.getExpiration())+ "', " +
+                        product.getPrice() + ", " +
+                        storageId +
+                        ");";
+        st.addBatch(sql);
+    }
+
     /**
      * @param product to add
      */
-    public static int addProduct(Product product, int storageId) throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+    public static void addProduct(Product product, int storageId) throws SQLException, ClassNotFoundException {
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
-        int r = st.executeUpdate(
-                "INSERT INTO products (name, category, production_date, expiration_date, price, storage) "+
-                "VALUES ("+
-                    "'" + product.getName() + "', " +
-                    "'" + product.getCategory().toString() + "', " +
-                    "'" + Date.valueOf(product.getProductionDate()) + "', " +
-                    "'" + Date.valueOf(product.getExpiration())+ "', " +
-                    product.getPrice() + ", " +
-                    storageId +
-                ");");
-        ResultSet rs = st.executeQuery("SELECT id FROM products WHERE name='" + product.getName() +
-                "' AND storage='" + storageId + "';");
-        rs.next();
-        product.setId(rs.getInt("id"));
+        addProductBatch(product, storageId, st);
+        st.executeBatch();
         conn.close();
-        return r;
     }
 
     /**
      * @param storage to add
      */
     public static int addStorage(Storage storage) throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         int r = st.executeUpdate(
                 "INSERT INTO storage (name) "+
@@ -99,10 +103,11 @@ public class DBService {
         rs.next();
         int storageId = rs.getInt("id");
         storage.setId(storageId);
-        conn.close();
         for (Product p: storage.getProducts()) {
-            addProduct(p, storageId);
+            addProductBatch(p, storageId, st);
         }
+        st.executeBatch();
+        conn.close();
         return r;
     }
 
@@ -112,7 +117,7 @@ public class DBService {
      * @return product with id
      */
     public static Product getProduct(int id) throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM products WHERE id=" + id + ";");
         Product product = null;
@@ -120,8 +125,8 @@ public class DBService {
             product = new ProductBuilder().setId(rs.getInt("id"))
                     .setName(rs.getString("name"))
                     .setCategory(Product.Category.valueOf(rs.getString("category")))
-//                    .setProductionDate(rs.getDate("production_date").toLocalDate())
-//                    .setExpiration(rs.getDate("expiration_date").toLocalDate())
+                    .setProductionDate(LocalDate.parse(rs.getString("production_date")))
+                    .setExpiration(LocalDate.parse(rs.getString("expiration_date")))
                     .setPrice(rs.getDouble("price"))
                     .build();
         }
@@ -134,7 +139,7 @@ public class DBService {
      * @return product with name
      */
     public static Product getProduct(String name) throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT id FROM products WHERE name='" + name + "';");
         Product product = null;
@@ -149,7 +154,7 @@ public class DBService {
      * @return products
      */
     public static ArrayList<Product> getProducts() throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM products;");
         ArrayList<Product> products = new ArrayList<>();
@@ -157,8 +162,8 @@ public class DBService {
             products.add(new ProductBuilder().setId(rs.getInt("id"))
                     .setName(rs.getString("name"))
                     .setCategory(Product.Category.valueOf(rs.getString("category")))
-//                    .setProductionDate(rs.getDate("production_date").toLocalDate())
-//                    .setExpiration(rs.getDate("expiration_date").toLocalDate())
+                    .setProductionDate(LocalDate.parse(rs.getString("production_date")))
+                    .setExpiration(LocalDate.parse(rs.getString("expiration_date")))
                     .setPrice(rs.getDouble("price"))
                     .build());
         }
@@ -171,7 +176,7 @@ public class DBService {
      * @return storage with id
      */
     public static Storage getStorage(int id) throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(
             "SELECT s.id, s.name, p.id, p.name, p.category, p.production_date, p.expiration_date, p.price " +
@@ -188,8 +193,8 @@ public class DBService {
                         .setId(rs.getInt(3))
                         .setName(rs.getString(4))
                         .setCategory(Product.Category.valueOf(rs.getString(5)))
-//                        .setProductionDate(rs.getDate(6).toLocalDate())
-//                        .setExpiration(rs.getDate(7).toLocalDate())
+                        .setProductionDate(LocalDate.parse(rs.getString(6)))
+                        .setExpiration(LocalDate.parse(rs.getString(7)))
                         .setPrice(rs.getDouble(8))
                         .build();
                 storage.addProduct(p);
@@ -204,7 +209,7 @@ public class DBService {
      * @return storage with name
      */
     public static Storage getStorage(String name) throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT id FROM storage WHERE name='" + name + "';");
         Storage storage = null;
@@ -219,7 +224,7 @@ public class DBService {
      * @return storages
      */
     public static ArrayList<Storage> getStorages() throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(
                 "SELECT s.id, s.name, p.id, p.name, p.category, p.production_date, p.expiration_date, p.price " +
@@ -243,8 +248,8 @@ public class DBService {
                         .setId(rs.getInt(3))
                         .setName(rs.getString(4))
                         .setCategory(Product.Category.valueOf(rs.getString(5)))
-//                        .setProductionDate(rs.getDate(6).toLocalDate())
-//                        .setExpiration(rs.getDate(7).toLocalDate())
+                        .setProductionDate(LocalDate.parse(rs.getString(6)))
+                        .setExpiration(LocalDate.parse(rs.getString(7)))
                         .setPrice(rs.getDouble(8))
                         .build();
                 storage.addProduct(p);
@@ -254,8 +259,8 @@ public class DBService {
                         .setId(rs.getInt(3))
                         .setName(rs.getString(4))
                         .setCategory(Product.Category.valueOf(rs.getString(5)))
-//                        .setProductionDate(rs.getDate(6).toLocalDate())
-//                        .setExpiration(rs.getDate(7).toLocalDate())
+                        .setProductionDate(LocalDate.parse(rs.getString(6)))
+                        .setExpiration(LocalDate.parse(rs.getString(7)))
                         .setPrice(rs.getDouble(8))
                         .build();
             }
@@ -268,7 +273,7 @@ public class DBService {
      * @param product to update
      */
     public static void updateProduct(Product product) throws SQLException, ClassNotFoundException, IllegalArgumentException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         int rs = st.executeUpdate("UPDATE products SET " +
                 "name='" + product.getName() + "', " +
@@ -285,7 +290,7 @@ public class DBService {
      * @param storage to update
      */
     public static void updateStorage(Storage storage) throws SQLException, ClassNotFoundException, IllegalArgumentException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         int rs = st.executeUpdate("UPDATE storage SET " +
                 "name='" + storage.getName() + "' " +
@@ -298,7 +303,7 @@ public class DBService {
      * @param id product to delete
      */
     public static void deleteProduct(int id) throws SQLException, ClassNotFoundException, IllegalArgumentException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         int rs = st.executeUpdate("DELETE FROM products WHERE id=" + id + ";");
         conn.close();
@@ -309,7 +314,7 @@ public class DBService {
      * @param id product to delete; products in storage also will be deleted
      */
     public static void deleteStorage(int id) throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         int rs = st.executeUpdate("DELETE FROM storage WHERE id=" + id + ";");
         st.executeUpdate("DELETE FROM products WHERE storage=" + id + ";");
@@ -318,11 +323,34 @@ public class DBService {
     }
 
     private static void drop() throws SQLException, ClassNotFoundException {
-        Connection conn = getNewConnection();
+        Connection conn = getConnection();
         Statement st = conn.createStatement();
         st.executeUpdate("DROP TABLE IF EXISTS 'products';");
         st.executeUpdate("DROP TABLE IF EXISTS 'storage';");
         conn.close();
+    }
+
+    public static List<Product> expiredProducts() throws SQLException, ClassNotFoundException {
+        Connection conn = getConnection();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(
+                "SELECT *" +
+                        "FROM products " +
+                        "WHERE expiration_date > DATE('now')" +
+                        "ORDER BY expiration_date" + ";"
+        );
+        ArrayList<Product> products = new ArrayList<>();
+        while(rs.next()) {
+            products.add(new ProductBuilder().setId(rs.getInt("id"))
+                    .setName(rs.getString("name"))
+                    .setCategory(Product.Category.valueOf(rs.getString("category")))
+                    .setProductionDate(LocalDate.parse(rs.getString("production_date")))
+                    .setExpiration(LocalDate.parse(rs.getString("expiration_date")))
+                    .setPrice(rs.getDouble("price"))
+                    .build());
+        }
+        conn.close();
+        return products;
     }
 
 }
