@@ -30,8 +30,6 @@ public class StorageHandler extends HttpServlet {
         // Set response content type
         response.setContentType("text/html");
         String path = request.getRequestURI();
-        PrintWriter out = response.getWriter();
-        GeneralWriter.writeStart(out);
         Matcher match = getPattern.matcher(path);
         if (match.matches()) {
             writeStorage(request, response, Integer.parseInt(match.group(1)));

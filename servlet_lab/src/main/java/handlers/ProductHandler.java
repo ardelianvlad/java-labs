@@ -33,8 +33,6 @@ public class ProductHandler extends HttpServlet {
         // Set response content type
         response.setContentType("text/html");
         String path = request.getRequestURI();
-        PrintWriter out = response.getWriter();
-        GeneralWriter.writeStart(out);
         Matcher match = getPattern.matcher(path);
         if (match.matches()) {
             writeProduct(request, response, Integer.parseInt(match.group(1)));
@@ -153,6 +151,10 @@ public class ProductHandler extends HttpServlet {
         }
         try {
             p.setName(request.getParameter("name"));
+            p.setCategory(Product.Category.valueOf(request.getParameter("category")));
+            p.setProductionDate(LocalDate.parse(request.getParameter("production_date")));
+            p.setExpiration(LocalDate.parse(request.getParameter("expiration_date")));
+            p.setPrice(Double.parseDouble(request.getParameter("price")));
             DBService.updateProduct(p);
             response.sendRedirect("/product/" + id);
         } catch (Exception ignored) {
