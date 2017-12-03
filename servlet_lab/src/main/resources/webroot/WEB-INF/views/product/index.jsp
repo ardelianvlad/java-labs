@@ -10,6 +10,7 @@
         <form action="/product/delete/${id}" method=post style="display:inline;">
             <button class="btn btn-danger" type="submit" role="button">Delete</button>
         </form>
+        <p></p>
         <dl class="row">
             <dt class="col-sm-3">Name:</dt>
             <dd class="col-sm-9">${product.name}</dd>

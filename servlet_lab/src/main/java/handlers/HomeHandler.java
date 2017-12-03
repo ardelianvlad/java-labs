@@ -1,6 +1,8 @@
 package handlers;
 
 import database.DBService;
+import models.Product;
+import models.ProductBuilder;
 import models.Storage;
 import models.StorageBuilder;
 
@@ -9,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -30,18 +31,10 @@ public class HomeHandler extends HttpServlet {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Set response content type
         String path = request.getRequestURI();
         response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
         if (path.equals("/error")) {
             writeError(request, response);
-            return;
-        }
-        Pattern p = Pattern.compile("/find/?(.+)");
-        Matcher m = p.matcher(path);
-        if (m.matches()) {
-            writeFind(m.group(1), request, response);
             return;
         }
         writeMain(request, response);
@@ -78,12 +71,18 @@ public class HomeHandler extends HttpServlet {
         try {
             Connection conn = DBService.getConnection();
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT id, name FROM storages WHERE lower(name) LIKE '%" + name.toLowerCase() + "%';");
+            ResultSet rs = st.executeQuery("SELECT id,name FROM storage WHERE lower(name) LIKE '" + name.toLowerCase() + "';");
             List<Storage> storages = new ArrayList<>();
             while (rs.next()) {
                 storages.add(new StorageBuilder().setId(rs.getInt("id")).setName(rs.getString("name")).build());
             }
+            rs = st.executeQuery("SELECT id, name FROM products WHERE lower(name) LIKE '" + name.toLowerCase() + "';");
+            List<Product> products = new ArrayList<>();
+            while (rs.next()) {
+                products.add(new ProductBuilder().setId(rs.getInt("id")).setName(rs.getString("name")).build());
+            }
             request.setAttribute("storages", storages);
+            request.setAttribute("products", products);
             request.getRequestDispatcher("/WEB-INF/views/home/find.jsp").forward(request, response);
         } catch (Exception ignored) {
             request.getRequestDispatcher("/WEB-INF/views/home/error.jsp").forward(request, response);
@@ -96,10 +95,12 @@ public class HomeHandler extends HttpServlet {
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("/find/" + request.getParameter("search"));
+        String path = request.getRequestURI();
+        Pattern p = Pattern.compile("/find/");
+        Matcher m = p.matcher(path);
+        if (m.matches()) {
+            writeFind(request.getParameter("search"), request, response);
+        }
     }
 
-    public void destroy() {
-
-    }
 }

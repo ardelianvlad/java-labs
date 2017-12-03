@@ -22,10 +22,6 @@ public class StorageHandler extends HttpServlet {
     final Pattern editPattern = Pattern.compile("/storage/edit/(\\d+)");
     final Pattern deletePattern = Pattern.compile("/storage/delete/(\\d+)");
 
-    public void init() throws ServletException {
-        // Do required initialization
-    }
-
     /**
      * writes beginning of file. Chooses which page to render and calls required method
      */

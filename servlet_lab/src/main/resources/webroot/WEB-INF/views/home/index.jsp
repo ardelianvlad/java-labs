@@ -2,16 +2,16 @@
 <jsp:include page="../includes/start.jsp"/>
 
 <a class="btn btn-primary" href="/storage/add/">Add new storage</a>
-
+<p></p>
 <c:choose>
     <c:when test="${storages.size() == 0}">
         <div class="alert alert-danger" role="alert">There are no storage. Add one to begin.</div>
     </c:when>
     <c:otherwise>
         <h3>Current storage:</h3>
-        <ul>
+        <ul class="list-group">
             <c:forEach items="${storages}" var="storage">
-                <li><a href="/storage/${storage.id}">${storage.name}</a></li>
+                <li class="list-group-item"><a href="/storage/${storage.id}">${storage.name}</a></li>
             </c:forEach>
         </ul>
     </c:otherwise>
