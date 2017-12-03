@@ -200,6 +200,14 @@ public class DBService {
                 storage.addProduct(p);
             } while (rs.next());
         }
+        if (storage == null) {
+            rs = st.executeQuery("SELECT name FROM storage WHERE id='" + id + "';");
+            if (rs.next()) {
+                storage = new StorageBuilder().setId(id)
+                        .setName(rs.getString(1))
+                        .build();
+            }
+        }
         conn.close();
         return storage;
     }
@@ -227,43 +235,15 @@ public class DBService {
         Connection conn = getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(
-                "SELECT s.id, s.name, p.id, p.name, p.category, p.production_date, p.expiration_date, p.price " +
-                        "FROM products AS p, storage AS s " +
-                        "WHERE p.storage=s.id " +
-                        "ORDER BY s.id" + ";"
+                "SELECT id, name " +
+                        "FROM storage;"
         );
         ArrayList<Storage> storages = new ArrayList<>();
-        Product p = null;
         while(rs.next()) {
-            int oldId = rs.getInt(1);
             Storage storage = new StorageBuilder()
-                    .setId(oldId)
+                    .setId(rs.getInt(1))
                     .setName(rs.getString(2))
                     .build();
-            if(p != null) {
-                storage.addProduct(p);
-            }
-            do {
-                p = new ProductBuilder()
-                        .setId(rs.getInt(3))
-                        .setName(rs.getString(4))
-                        .setCategory(Product.Category.valueOf(rs.getString(5)))
-                        .setProductionDate(LocalDate.parse(rs.getString(6)))
-                        .setExpiration(LocalDate.parse(rs.getString(7)))
-                        .setPrice(rs.getDouble(8))
-                        .build();
-                storage.addProduct(p);
-            } while (rs.next() && oldId == rs.getInt(1));
-            if (!rs.isClosed()) {
-                p = new ProductBuilder()
-                        .setId(rs.getInt(3))
-                        .setName(rs.getString(4))
-                        .setCategory(Product.Category.valueOf(rs.getString(5)))
-                        .setProductionDate(LocalDate.parse(rs.getString(6)))
-                        .setExpiration(LocalDate.parse(rs.getString(7)))
-                        .setPrice(rs.getDouble(8))
-                        .build();
-            }
             storages.add(storage);
         }
         return storages;

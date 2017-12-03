@@ -43,7 +43,7 @@ public class StorageHandler extends HttpServlet {
         }
         match = addPattern.matcher(path);
         if (match.matches()) {
-            writeAddForm(request, response, Integer.parseInt(match.group(1)));
+            writeAddForm(request, response);
             return;
         }
         match = editPattern.matcher(path);
@@ -72,10 +72,9 @@ public class StorageHandler extends HttpServlet {
     /**
      * writes form to create storage for department with {@code id}
      *
-     * @param id id of parent
+     * @param
      */
-    private void writeAddForm(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
-        request.setAttribute("id", id);
+    private void writeAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/WEB-INF/views/storage/add.jsp").forward(request, response);
     }
 
@@ -109,7 +108,7 @@ public class StorageHandler extends HttpServlet {
         match = addPattern.matcher(path);
         if (match.matches()) {
             try {
-                addStorage(request, response, Integer.parseInt(match.group(1)));
+                addStorage(request, response);
             } catch (SQLException | ClassNotFoundException e) {
                 response.sendRedirect("/error");
             }
@@ -126,11 +125,18 @@ public class StorageHandler extends HttpServlet {
     /**
      * creates new storage
      *
-     * @param storageId
      * @return id of created Storage or 0, if failed
      */
-    private void addStorage(HttpServletRequest request, HttpServletResponse response, int storageId) throws SQLException, ClassNotFoundException, ServletException, IOException {
-
+    private void addStorage(HttpServletRequest request, HttpServletResponse response) throws SQLException, ClassNotFoundException, ServletException, IOException {
+        try {
+            Storage s = new StorageBuilder().setName(request.getParameter("name")).build();
+            DBService.addStorage(s);
+            response.sendRedirect("/");
+        }
+        catch (Exception ignored) {
+            request.setAttribute("error", true);
+            writeAddForm(request, response);
+        }
     }
 
     /**
@@ -140,7 +146,15 @@ public class StorageHandler extends HttpServlet {
      * @return whether update was successful
      */
     private void editStorage(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
-
+        try {
+            Storage s = new StorageBuilder().setId(id).setName(request.getParameter("name")).build();
+            DBService.updateStorage(s);
+            response.sendRedirect("/storage/" + id);
+        }
+        catch (Exception ignored) {
+            request.setAttribute("error", true);
+            writeAddForm(request, response);
+        }
     }
 
     /**
@@ -153,7 +167,4 @@ public class StorageHandler extends HttpServlet {
         }
     }
 
-    public void destroy() {
-        // do nothing.
-    }
 }

@@ -6,7 +6,6 @@
         <div class="alert alert-danger" role="alert">There is no product with id ${id}!</div>
     </c:when>
     <c:otherwise>
-        <a class="btn btn-primary" role="button" href="/product/add/">Add new product</a>
         <a class="btn btn-warning" role="button" href="/product/edit/${id}">Edit</a>
         <form action="/product/delete/${id}" method=post style="display:inline;">
             <button class="btn btn-danger" type="submit" role="button">Delete</button>

@@ -1,7 +1,6 @@
 package handlers;
 
 import database.DBService;
-import models.Product;
 import models.Storage;
 import models.StorageBuilder;
 

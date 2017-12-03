@@ -1,14 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="../includes/start.jsp"/>
 
-<a class="btn btn-primary" href="/storage/add">Add new storage</a>
+<a class="btn btn-primary" href="/storage/add/">Add new storage</a>
 
 <c:choose>
     <c:when test="${storages.size() == 0}">
-        <div class="alert alert-danger" role="alert">There are no storages. Add one to begin.</div>
+        <div class="alert alert-danger" role="alert">There are no storage. Add one to begin.</div>
     </c:when>
     <c:otherwise>
-        <h3>Current storages:</h3>
+        <h3>Current storage:</h3>
         <ul>
             <c:forEach items="${storages}" var="storage">
                 <li><a href="/storage/${storage.id}">${storage.name}</a></li>

@@ -11,11 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProductHandler extends HttpServlet {
     final Pattern getPattern = Pattern.compile("/product/(\\d+)");
+    final Pattern addPattern = Pattern.compile("/product/add/(\\d+)");
     final Pattern editPattern = Pattern.compile("/product/edit/(\\d+)");
     final Pattern deletePattern = Pattern.compile("/product/delete/(\\d+)");
 
@@ -33,13 +35,14 @@ public class ProductHandler extends HttpServlet {
         String path = request.getRequestURI();
         PrintWriter out = response.getWriter();
         GeneralWriter.writeStart(out);
-        if (path.equals("/product/add/")) {
-            writeAddForm(request, response);
-            return;
-        }
         Matcher match = getPattern.matcher(path);
         if (match.matches()) {
             writeProduct(request, response, Integer.parseInt(match.group(1)));
+            return;
+        }
+        match = addPattern.matcher(path);
+        if (match.matches()) {
+            writeAddForm(request, response, Integer.parseInt(match.group(1)));
             return;
         }
         match = editPattern.matcher(path);
@@ -68,7 +71,8 @@ public class ProductHandler extends HttpServlet {
     /**
      * writes from to add new product
      */
-    private void writeAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void writeAddForm(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
+        request.setAttribute("id", id);
         request.getRequestDispatcher("/WEB-INF/views/product/add.jsp").forward(request, response);
     }
 
@@ -103,8 +107,9 @@ public class ProductHandler extends HttpServlet {
             }
             return;
         }
-        if (path.equals("/product/add")) {
-            addProduct(request, response);
+        match = addPattern.matcher(path);
+        if (match.matches()) {
+            addProduct(request, response, Integer.parseInt(match.group(1)));
             return;
         }
         match = deletePattern.matcher(path);
@@ -117,16 +122,21 @@ public class ProductHandler extends HttpServlet {
     /**
      * creates new product
      */
-    private void addProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void addProduct(HttpServletRequest request, HttpServletResponse response, int storageId) throws ServletException, IOException {
+
         try {
             Product p = new ProductBuilder()
                     .setName(request.getParameter("name"))
+                    .setCategory(Product.Category.valueOf(request.getParameter("category")))
+                    .setProductionDate(LocalDate.parse(request.getParameter("production_date")))
+                    .setExpiration(LocalDate.parse(request.getParameter("expiration_date")))
+                    .setPrice(Double.parseDouble(request.getParameter("price")))
                     .build();
-            DBService.addProduct(p, 1);
-            response.sendRedirect("/product/" + p.getId());
+            DBService.addProduct(p, storageId);
+            response.sendRedirect("/storage/" + storageId);
         } catch (Exception ignored) {
             request.setAttribute("error", true);
-            writeAddForm(request, response);
+            writeAddForm(request, response, storageId);
         }
     }
 
@@ -161,7 +171,4 @@ public class ProductHandler extends HttpServlet {
         }
     }
 
-    public void destroy() {
-        // do nothing.
-    }
 }
