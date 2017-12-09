@@ -1,6 +1,6 @@
 package handlers;
 
-import database.DBService;
+import database.DBDao;
 import services.SerializationService;
 
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ public class DumpHandler extends HttpServlet {
         response.setHeader("Content-disposition", "attachment; filename=dump.json");
         File dump = new File("dump.json");
         try {
-            SerializationService.serializeCollection(DBService.getProducts(), new PrintWriter(dump));
+            SerializationService.serializeCollection(DBDao.getProducts(), new PrintWriter(dump));
         } catch (Exception ignored) {
         }
         OutputStream out = response.getOutputStream();

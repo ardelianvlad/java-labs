@@ -62,3 +62,19 @@
     </c:otherwise>
 </c:choose>
 <jsp:include page="../includes/end.jsp"/>
+<script src="/static/js/validation.js"></script>
+<script>
+    var compareDateCheck = function() {
+        var startDate = Date.parse($('#production_date').val());
+        var endDate = Date.parse($('#expiration_date').val());
+        console.log(startDate, endDate);
+        if (startDate > endDate) {
+            $('#alert').html('<div class="alert alert-danger" role="alert">Production date must be less than expiration date.</div>');
+        }
+    };
+
+    $(document).ready(function () {
+        $('#production_date').change(compareDateCheck);
+        $('#expiration_date').change(compareDateCheck);
+    });
+</script>

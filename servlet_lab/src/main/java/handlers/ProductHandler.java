@@ -1,6 +1,6 @@
 package handlers;
 
-import database.DBService;
+import database.DBDao;
 import models.Product;
 import models.ProductBuilder;
 
@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -59,7 +58,7 @@ public class ProductHandler extends HttpServlet {
     private void writeProduct(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
         request.setAttribute("id", id);
         try {
-            Product p = DBService.getProduct(id);
+            Product p = DBDao.getProduct(id);
             request.setAttribute("product", p);
         } catch (Exception ignored) {
         }
@@ -82,7 +81,7 @@ public class ProductHandler extends HttpServlet {
     private void writeEditForm(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
         request.setAttribute("id", id);
         try {
-            Product p = DBService.getProduct(id);
+            Product p = DBDao.getProduct(id);
             request.setAttribute("product", p);
         } catch (Exception ignored) {
             response.sendRedirect("/error");
@@ -130,7 +129,7 @@ public class ProductHandler extends HttpServlet {
                     .setExpiration(LocalDate.parse(request.getParameter("expiration_date")))
                     .setPrice(Double.parseDouble(request.getParameter("price")))
                     .build();
-            DBService.addProduct(p, storageId);
+            DBDao.addProduct(p, storageId);
             response.sendRedirect("/storage/" + storageId);
         } catch (Exception ignored) {
             request.setAttribute("error", true);
@@ -145,17 +144,20 @@ public class ProductHandler extends HttpServlet {
      * @return whether updated successfully
      */
     private void editProduct(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException, SQLException, ClassNotFoundException {
-        Product p = DBService.getProduct(id);
+        Product p = DBDao.getProduct(id);
         if (p == null) {
             response.sendRedirect("/product/add/" + id);
         }
         try {
-            p.setName(request.getParameter("name"));
-            p.setCategory(Product.Category.valueOf(request.getParameter("category")));
-            p.setProductionDate(LocalDate.parse(request.getParameter("production_date")));
-            p.setExpiration(LocalDate.parse(request.getParameter("expiration_date")));
-            p.setPrice(Double.parseDouble(request.getParameter("price")));
-            DBService.updateProduct(p);
+            p = new ProductBuilder()
+                    .setId(id)
+                    .setName(request.getParameter("name"))
+                    .setCategory(Product.Category.valueOf(request.getParameter("category")))
+                    .setProductionDate(LocalDate.parse(request.getParameter("production_date")))
+                    .setExpiration(LocalDate.parse(request.getParameter("expiration_date")))
+                    .setPrice(Double.parseDouble(request.getParameter("price")))
+                    .build();
+            DBDao.updateProduct(p);
             response.sendRedirect("/product/" + id);
         } catch (Exception ignored) {
             request.setAttribute("error", true);
@@ -168,7 +170,7 @@ public class ProductHandler extends HttpServlet {
      */
     private void deleteProduct(int id) {
         try {
-            DBService.deleteProduct(id);
+            DBDao.deleteProduct(id);
         } catch (Exception ignored) {
         }
     }

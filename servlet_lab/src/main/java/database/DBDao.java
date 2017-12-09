@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class DBService {
+public class DBDao {
 
     private final static String USERNAME = "user";
     private final static String PASSWORD = "password";
@@ -172,6 +172,24 @@ public class DBService {
     }
 
     /**
+     * @return list of products which match search query
+     */
+    public static ArrayList<Product> searchProducts(String name) throws SQLException, ClassNotFoundException {
+        Connection conn = getConnection();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery("SELECT id,name FROM products WHERE lower(name) LIKE '%" + name.toLowerCase() + "%';");
+        ArrayList<Product> products = new ArrayList<>();
+        while(rs.next()) {
+            Product product = new ProductBuilder()
+                    .setId(rs.getInt(1))
+                    .setName(rs.getString(2))
+                    .build();
+            products.add(product);
+        }
+        return products;
+    }
+
+    /**
      * @param id
      * @return storage with id
      */
@@ -238,6 +256,24 @@ public class DBService {
                 "SELECT id, name " +
                         "FROM storage;"
         );
+        ArrayList<Storage> storages = new ArrayList<>();
+        while(rs.next()) {
+            Storage storage = new StorageBuilder()
+                    .setId(rs.getInt(1))
+                    .setName(rs.getString(2))
+                    .build();
+            storages.add(storage);
+        }
+        return storages;
+    }
+
+    /**
+     * @return list of storage which match search query
+     */
+    public static ArrayList<Storage> searchStorages(String name) throws SQLException, ClassNotFoundException {
+        Connection conn = getConnection();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery("SELECT id,name FROM storage WHERE lower(name) LIKE '%" + name.toLowerCase() + "%';");
         ArrayList<Storage> storages = new ArrayList<>();
         while(rs.next()) {
             Storage storage = new StorageBuilder()

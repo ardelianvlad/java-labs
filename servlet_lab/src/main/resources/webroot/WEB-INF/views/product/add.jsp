@@ -6,6 +6,7 @@
         Wrong input.
     </div>
 </c:if>
+<div id="alert"></div>
 <form action="/product/add/${id}" method="post">
     <div class="form-group row">
         <label for="name" class="col-sm-2 col-form-label">Name: </label>
@@ -53,3 +54,17 @@
 </form>
 <jsp:include page="../includes/end.jsp"/>
 <script src="/static/js/validation.js"></script>
+<script>
+    var compareDateCheck = function() {
+        var startDate = Date.parse($('#production_date').val());
+        var endDate = Date.parse($('#expiration_date').val());
+        console.log(startDate, endDate);
+        if (startDate > endDate) {
+            $('#alert').html('<div class="alert alert-danger" role="alert">Production date must be less than expiration date.</div>');
+        }
+    };
+
+    $('#production_date').change(compareDateCheck);
+
+    $('#expiration_date').change(compareDateCheck);
+</script>

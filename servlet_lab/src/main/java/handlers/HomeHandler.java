@@ -1,6 +1,6 @@
 package handlers;
 
-import database.DBService;
+import database.DBDao;
 import models.Product;
 import models.ProductBuilder;
 import models.Storage;
@@ -46,7 +46,7 @@ public class HomeHandler extends HttpServlet {
     private void writeMain(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Storage> storages;
         try {
-            storages = DBService.getStorages();
+            storages = DBDao.getStorages();
         } catch (Exception ignored) {
             storages = new ArrayList<>();
         }
@@ -69,18 +69,10 @@ public class HomeHandler extends HttpServlet {
      */
     private void writeFind(String name, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Connection conn = DBService.getConnection();
+            Connection conn = DBDao.getConnection();
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT id,name FROM storage WHERE lower(name) LIKE '" + name.toLowerCase() + "';");
-            List<Storage> storages = new ArrayList<>();
-            while (rs.next()) {
-                storages.add(new StorageBuilder().setId(rs.getInt("id")).setName(rs.getString("name")).build());
-            }
-            rs = st.executeQuery("SELECT id, name FROM products WHERE lower(name) LIKE '" + name.toLowerCase() + "';");
-            List<Product> products = new ArrayList<>();
-            while (rs.next()) {
-                products.add(new ProductBuilder().setId(rs.getInt("id")).setName(rs.getString("name")).build());
-            }
+            List<Storage> storages = DBDao.searchStorages(name);
+            List<Product> products = DBDao.searchProducts(name);
             request.setAttribute("storages", storages);
             request.setAttribute("products", products);
             request.getRequestDispatcher("/WEB-INF/views/home/find.jsp").forward(request, response);

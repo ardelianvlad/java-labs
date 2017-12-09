@@ -14,15 +14,10 @@ $(document).ready(function () {
             else {
                 $(this).toggleClass("error", !!hasError);
                 $(this).toggleClass("ok", !hasError);
-
-                /*if (hasError) {
-                    $(this).attr("title", errorMessage);
-                }
-                else {
-                    $(this).removeAttr("title");
-                }*/
             }
         }
 
     });
+
+
 });

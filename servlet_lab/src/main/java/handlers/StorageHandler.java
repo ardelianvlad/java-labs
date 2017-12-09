@@ -1,7 +1,6 @@
 package handlers;
 
-import database.DBService;
-import models.Product;
+import database.DBDao;
 import models.Storage;
 import models.StorageBuilder;
 
@@ -10,9 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,11 +53,12 @@ public class StorageHandler extends HttpServlet {
     private void writeStorage(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
         request.setAttribute("id", id);
         try {
-            Storage s = DBService.getStorage(id);
+            Storage s = DBDao.getStorage(id);
             request.setAttribute("storage", s);
+            request.getRequestDispatcher("/WEB-INF/views/storage/index.jsp").forward(request, response);
         } catch (Exception ignored) {
+            response.sendRedirect("/error");
         }
-        request.getRequestDispatcher("/WEB-INF/views/storage/index.jsp").forward(request, response);
     }
 
     /**
@@ -80,7 +78,7 @@ public class StorageHandler extends HttpServlet {
     private void writeEditForm(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
         request.setAttribute("id", id);
         try {
-            Storage s = DBService.getStorage(id);
+            Storage s = DBDao.getStorage(id);
             request.setAttribute("storage", s);
         } catch (Exception ignored) {
         }
@@ -124,7 +122,7 @@ public class StorageHandler extends HttpServlet {
     private void addStorage(HttpServletRequest request, HttpServletResponse response) throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {
             Storage s = new StorageBuilder().setName(request.getParameter("name")).build();
-            DBService.addStorage(s);
+            DBDao.addStorage(s);
             response.sendRedirect("/");
         }
         catch (Exception ignored) {
@@ -142,7 +140,7 @@ public class StorageHandler extends HttpServlet {
     private void editStorage(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
         try {
             Storage s = new StorageBuilder().setId(id).setName(request.getParameter("name")).build();
-            DBService.updateStorage(s);
+            DBDao.updateStorage(s);
             response.sendRedirect("/storage/" + id);
         }
         catch (Exception ignored) {
@@ -156,7 +154,7 @@ public class StorageHandler extends HttpServlet {
      */
     private void deleteStorage(int id) {
         try {
-            DBService.deleteStorage(id);
+            DBDao.deleteStorage(id);
         } catch (Exception ignored) {
         }
     }
