@@ -1,10 +1,8 @@
 package handlers;
 
-import database.DBDao;
+import dao.DBDao;
 import models.Product;
-import models.ProductBuilder;
 import models.Storage;
-import models.StorageBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package handlers;
 
-import database.DBDao;
+import dao.DBDao;
 import services.SerializationService;
 
 import javax.servlet.ServletException;

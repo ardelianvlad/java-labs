@@ -9,7 +9,7 @@ public class StorageBuilder {
     private String name;
     private int id;
 
-    private final String NAME_PATTERN = "^[A-Z].{0,100}$";
+    private final String NAME_PATTERN = "^[A-Z][A-Za-z0-9 -].{5,100}$";
 
     public StorageBuilder() {
         this.products = new ArrayList<Product>();

@@ -1,6 +1,6 @@
 package handlers;
 
-import database.DBDao;
+import dao.DBDao;
 import models.Product;
 import models.ProductBuilder;
 
@@ -70,6 +70,7 @@ public class ProductHandler extends HttpServlet {
      */
     private void writeAddForm(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
         request.setAttribute("id", id);
+        request.setAttribute("categories", Product.Category.values());
         request.getRequestDispatcher("/WEB-INF/views/product/add.jsp").forward(request, response);
     }
 
@@ -80,6 +81,7 @@ public class ProductHandler extends HttpServlet {
      */
     private void writeEditForm(HttpServletRequest request, HttpServletResponse response, int id) throws ServletException, IOException {
         request.setAttribute("id", id);
+        request.setAttribute("categories", Product.Category.values());
         try {
             Product p = DBDao.getProduct(id);
             request.setAttribute("product", p);

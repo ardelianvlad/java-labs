@@ -19,13 +19,9 @@
         <label for="category" class="col-sm-2 col-form-label">Category: </label>
         <div class="col-sm-10">
             <select class="form-control" id="category" name="category">
-                <option value="OTHER">Other</option>
-                <option value="FRUIT">Fruit</option>
-                <option value="VEGETABLES">Vegetables</option>
-                <option value="DAIRY">Dairy</option>
-                <option value="MEAT">Meat</option>
-                <option value="FISH">Fish</option>
-                <option value="DRINKS">Drinks</option>
+                <c:forEach items="${categories}" var="category">
+                    <option>${category}</option>
+                </c:forEach>
             </select>
         </div>
     </div>
@@ -46,7 +42,7 @@
     <div class="form-group row">
         <label for="price" class="col-sm-2 col-form-label">Price: </label>
         <div class="col-sm-10">
-            <input type="text" id="price" required pattern="(\d*[\.,]\d*)"
+            <input type="text" id="price" required pattern="(\d*[\.,]\d*)|(\d*)"
                    title="Price can contain only numbers." class="form-control" name="price" placeholder="Enter price">
         </div>
     </div>

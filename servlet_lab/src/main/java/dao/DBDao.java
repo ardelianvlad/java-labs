@@ -1,4 +1,4 @@
-package database;
+package dao;
 
 import models.Product;
 import models.ProductBuilder;
@@ -54,7 +54,7 @@ public class DBDao {
     }
 
     /**
-     * creates new database
+     * creates new dao
      */
     public static void setDatabase() throws SQLException, ClassNotFoundException {
         Connection conn = getConnection();

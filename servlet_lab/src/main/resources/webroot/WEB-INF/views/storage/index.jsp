@@ -12,16 +12,11 @@
 </form>
 <a class="btn btn-primary" role="button" href="/product/add/${id}">Add new product</a>
 <p></p>
-<dl class="row">
-    <dt class="col-sm-3">Name:</dt>
-    <dd class="col-sm-9">${storage.name}</dd>
-    <dt class="col-sm-3">Products:</dt>
-    <dd class="col-sm-9">
-        <ul class="list-group">
-            <c:forEach var="product" items="${storage.products}">
-                <li class="list-group-item"><a href="/product/${product.id}">${product.name}</a></li>
-            </c:forEach>
-        </ul>
-    </dd>
-</dl>
+<h3 class="col-sm-9">${storage.name}</h3>
+<p></p>
+<ul class="list-group">
+    <c:forEach var="product" items="${storage.products}">
+        <li class="list-group-item"><a href="/product/${product.id}">${product.name}</a></li>
+    </c:forEach>
+</ul>
 <jsp:include page="../includes/end.jsp"/>
